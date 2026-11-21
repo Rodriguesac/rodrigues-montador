@@ -24,6 +24,8 @@ jobs:
         run: |
           gh api repos/"$GITHUB_REPOSITORY"/pages >/dev/null 2>&1 || gh api -X POST repos/"$GITHUB_REPOSITORY"/pages -f build_type=workflow || true
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22

@@ -50,4 +50,13 @@ async function worker() {
 }
 await Promise.all(Array.from({ length: 6 }, () => worker()));
 await writeFile(path.join(dist, "catalogo-estatico.json"), JSON.stringify(catalog, null, 2));
+let page = await readFile(path.join(root, "index.html"), "utf8");
+const beginMark = "/*CATALOG_START*/", endMark = "/*CATALOG_END*/";
+const begin = page.indexOf(beginMark), end = page.indexOf(endMark, begin);
+if (begin === -1 || end === -1) throw Error("Snapshot markers not found in HTML");
+page = page.slice(0, begin + beginMark.length)
+  + JSON.stringify(catalog).replace(/</g, "\\u003c")
+  + page.slice(end);
+await writeFile(path.join(dist, "index.html"), page);
+
 console.log("Imagens locais:", done, "externas restantes:", failed);

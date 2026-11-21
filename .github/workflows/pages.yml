@@ -24,8 +24,13 @@ jobs:
         run: |
           gh api repos/"$GITHUB_REPOSITORY"/pages >/dev/null 2>&1 || gh api -X POST repos/"$GITHUB_REPOSITORY"/pages -f build_type=workflow || true
       - uses: actions/configure-pages@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Preparar arquivos estáticos e imagens
+        run: node scripts/preparar.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
       - id: deployment
         uses: actions/deploy-pages@v4

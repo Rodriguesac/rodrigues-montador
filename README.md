@@ -11,10 +11,14 @@ Montador mobile no mesmo estilo roxo e verde do projeto Rodrigues, com **catálo
 
 ## Publicação
 
-Hospede todos os arquivos **juntos, no mesmo diretório**, em Firebase Hosting, Netlify ou GitHub Pages. Não precisa de chaves de banco. O único acesso de catálogo é a um arquivo JSON estático no próprio domínio.
+Hospede todos os arquivos **juntos, no mesmo diretório**, em Firebase Hosting, Netlify ou GitHub Pages. Não precisa de chaves de banco. O catálogo também está **embutido no HTML**. A montagem não faz nenhuma chamada de rede ao banco nem ao arquivo JSON; o JSON fica como fonte de atualização e para a etapa de preparação das imagens.
 
-As imagens têm endereços fixos de serviços de imagens já utilizados no cadastro da loja (em geral i.ibb.co). Elas não consultam Supabase nem Firebase, mas ainda dependem do serviço de imagens na primeira visita. Para independência completa, é necessário mover fotos próprias/licenciadas para uma pasta local e trocar os endereços no JSON; o Service Worker pode manter cópias das que já foram visualizadas.
+As imagens usam links fixos já cadastrados na loja. O script de publicação `scripts/preparar.mjs` tenta copiar imagens de `i.ibb.co` para o site e substitui os caminhos no HTML publicado. Quando a cópia falha, mantém o endereço original como fallback; outras imagens de terceiros permanecem externas. Somente fotos com direitos de uso devem ser republicadas. O Service Worker guarda em cache imagens visitadas quando possível.
 
 O backup **não recebe pedidos em um banco**: gera resumo para copiar ou enviar pelo WhatsApp e exige confirmação da loja. Preços e disponibilidade ficam congelados até uma nova publicação. O preço Nutella 60 ml foi ajustado para R$ 8,50 conforme orientação da loja, apesar de o registro antigo ainda conter R$ 8,00.
 
 Não conecte um checkout automático a esse backup antes de implementar armazenamento e confirmação confiáveis, com prevenção de duplicidade.
+
+## Ativação do site de reserva
+
+A publicação automática usa GitHub Actions + GitHub Pages. Se Pages ainda não estiver ativado, abra **Settings → Pages → Build and deployment → Source: GitHub Actions**, salve e execute o workflow `Publicar Montador Independente` pela aba **Actions**. Não confundir o código criado com uma publicação já ativa.
